@@ -4,7 +4,6 @@ import os
 def primer3_design(target_fa,config,prefix):
 
 	allconfig = ''
-#	config_file = open(config)
 	file = open(target_fa)
 	for line in file:
 		line = line.strip()
@@ -33,9 +32,11 @@ def primer3_design(target_fa,config,prefix):
 	f.write(allconfig)
 	f.close()
 	
-	outfile = prefix + ".raw.primer.txt"
-	cmd = "primer3 %s -output=%s" % (p3infile,outfile)
+	p3outfile = prefix + ".raw.primer.txt"
+	cmd = "primer3 %s -output=%s" % (p3infile,p3outfile)
 	os.system(cmd)
+
+	return p3outfile
 
 if __name__ == "__main__":
 	primer3_design(target_fa,config,prefix)

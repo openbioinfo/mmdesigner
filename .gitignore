@@ -1,0 +1,8 @@
+*.pyc
+*.log
+*.py~
+*.py#
+tests/*
+docs/_build/
+!tests/*.py
+!tests/data
