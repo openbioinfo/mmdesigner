@@ -14,8 +14,8 @@ def CpG_filter(p3outfile):
 		if 'PRIMER_LEFT' and '_SEQUENCE' in line:
 			nothing,sequence = line.split("=")
 			if 'CG' in sequence:
-				pass
+				count_left_CG = sequence.count("CG")
 		if 'PRIMER_RIGHT' and '_SEQUENCE' in line:
 			nothing,sequence = line.split("+")
 			if 'CG' in sequnece:
-				pass
+				count_right_CG = sequence.count("CG")
