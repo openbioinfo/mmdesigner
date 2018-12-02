@@ -1,21 +1,100 @@
-import os 
 
-def CpG_filter(p3outfile):
+def CpG_filter(p3outfile,filter_primer_num,prefix):
 	
-	#PRIMER_LEFT_SEQUENCE就是正常参考序列的一样的部分，PRIMER_RIGHT_0_SEQUENCE是正常参考序列的反向互补序列
-	#而甲基化情况不同，先暂时只看正链的话，primer_left应该为甲基化参考序列的反向，primer_right应该为甲基化参考序列的反向互补
-	#现在的 left_primer换成甲基化参考序列之后需要做互补处理
+	left_dict = dict()
+	right_dict = dict()
 	file = open(p3outfile)
 	for line in file:
 		line = line.strip()
 		if line.startswith("SEQUENCE_ID"):
 			nothing,name = line.split("=")
-			primer = dict()
+			left_dict[name] = ''
+			right_dict[name] = ''
 		if 'PRIMER_LEFT' and '_SEQUENCE' in line:
 			nothing,sequence = line.split("=")
-			if 'CG' in sequence:
-				count_left_CG = sequence.count("CG")
+			left_dict[name] += sequence
+			left_dict[name] += "\t"
 		if 'PRIMER_RIGHT' and '_SEQUENCE' in line:
-			nothing,sequence = line.split("+")
-			if 'CG' in sequnece:
-				count_right_CG = sequence.count("CG")
+			nothing,sequence = line.split("=")
+			right_dict[name] += sequence
+			right_dict[name] += "\t"
+	
+	left_new_line = ''
+	for k,v in left_dict.items():
+		primers = v.split()
+		CG_num_dict = dict()
+		CG_num_count_dict = dict()
+		for primer in primers:
+			CG_num = primer.count('CG')
+			if CG_num not in CG_num_dict:
+				CG_num_dict[CG_num] = primer
+			else:
+				CG_num_dict[CG_num] += "\t"
+				CG_num_dict[CG_num] += primer
+			if CG_num not in CG_num_count_dict:
+				CG_num_count_dict[CG_num] = 1
+			else:
+				CG_num_count_dict[CG_num] += 1
+		
+		final_primer_dict = dict()
+		if CG_num_count_dict[0] >= filter_primer_num:
+			final_primer_dict[k] = CG_num_dict[0].split()[0:5]
+		elif CG_num_count_dict[0] + CG_num_count_dict[1] >= filter_primer_num:
+			final_primer_dict[k] = CG_num_dict[0].split()[0:CG_num_count_dict[0]]
+			final_primer_dict[k] += CG_num_dict[1].split()[0:filter_primer_num-CG_num_count_dict[0]]
+		else:
+			pass
+		
+		for key,value in final_primer_dict.items():
+			print key,value
+			new_key = '>' + key + '_forward'
+			for each_primer in value:
+				left_new_line += new_key
+				left_new_line += "\n"
+				left_new_line += each_primer
+				left_new_line += "\n"
+
+	right_new_line = ''
+	for k,v in right_dict.items():
+		primers = v.split()
+		CG_num_dict = dict()
+		CG_num_count_dict = dict()
+		for primer in primers:
+			CG_num = primer.count('CG')
+			if CG_num not in CG_num_dict:
+				CG_num_dict[CG_num] = primer
+			else:
+				CG_num_dict[CG_num] += "\t"
+				CG_num_dict[CG_num] += primer
+			if CG_num not in CG_num_count_dict:
+				CG_num_count_dict[CG_num] = 1
+			else:
+				CG_num_count_dict[CG_num] += 1
+
+		final_primer_dict = dict()
+		if CG_num_count_dict[0] >= filter_primer_num:
+			final_primer_dict[k] = CG_num_dict[0].split()[0:5]
+		elif CG_num_count_dict[0] + CG_num_count_dict[1] >= filter_primer_num:
+			final_primer_dict[k] = CG_num_dict[0].split()[0:CG_num_count_dict[0]]
+			final_primer_dict[k] += CG_num_dict[1].split()[0:filter_primer_num-CG_num_count_dict[0]]
+		else:
+			pass
+
+		for key,value in final_primer_dict.items():
+			new_key = '>' + key + '_reverse'
+			for each_primer in value:
+				right_new_line += new_key
+				right_new_line += "\n"
+				right_new_line += each_primer
+				right_new_line += "\n"
+	
+	filter_CpG_primer = prefix + ".filter_CpG.primer.txt"
+	f = open(filter_CpG_primer,'w')
+	f.write(left_new_line)
+	f.write(right_new_line)
+	f.close
+
+	return filter_CpG_primer
+
+if __name__ == "__main__":
+	CpG_filter(p3outfile,filter_primer_num,prefix)
