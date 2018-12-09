@@ -1,14 +1,15 @@
 import os
 
-def get_target_region(bed,ref,prefix,product_len):
+def get_target_region(bed,ref,prefix):
 	
+	max_product_len = 120
 	new_file = ''
 	file = open(bed)
 	for line in file:
 		line_list = line.strip().split()
 		chr   = str(line_list[0])
-		start = str(int(line_list[1]) - product_len)
-		end   = str(int(line_list[2]) + product_len)
+		start = str(int(line_list[1]) - max_product_len)
+		end   = str(int(line_list[2]) + max_product_len)
 		new_line = "\t".join([chr,start,end])
 		new_file += new_line
 		new_file += "\n"
@@ -25,4 +26,4 @@ def get_target_region(bed,ref,prefix,product_len):
 	return target_fasta
 
 if __name__ == "__main__":
-	get_target_region(bed,ref,prefix,product_len)
+	get_target_region(bed,ref,prefix)

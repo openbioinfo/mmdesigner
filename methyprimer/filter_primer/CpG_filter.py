@@ -1,6 +1,7 @@
 
-def CpG_filter(p3outfile,candidate_primer_num,prefix):
+def CpG_filter(p3outfile,prefix):
 	
+	candidate_primer_num = 10
 	primer_dict = dict()
 	file = open(p3outfile)
 	for line in file:
@@ -35,7 +36,6 @@ def CpG_filter(p3outfile,candidate_primer_num,prefix):
 			else:
 				CG_num_count_dict[CG_num] += 1
 		
-#		final_primer_dict = dict()
 		if CG_num_count_dict[0] >= candidate_primer_num:
 			final_primer_dict[k] = CG_num_dict[0].split("|")[0:5]
 		elif CG_num_count_dict[0] + CG_num_count_dict[1] >= candidate_primer_num:
@@ -75,4 +75,4 @@ def CpG_filter(p3outfile,candidate_primer_num,prefix):
 	return filter_CpG_primer
 
 if __name__ == "__main__":
-	CpG_filter(p3outfile,candidate_primer_num,prefix)
+	CpG_filter(p3outfile,prefix)

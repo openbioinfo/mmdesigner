@@ -1,7 +1,8 @@
 import os
+dirname = os.path.dirname(os.path.abspath(__file__))
+config = os.path.join(dirname,"p3.config")
 
-
-def primer3_design(target_fa,config,prefix):
+def primer3_design(target_fa,prefix):
 
 	allconfig = ''
 	file = open(target_fa)
@@ -39,4 +40,4 @@ def primer3_design(target_fa,config,prefix):
 	return p3outfile
 
 if __name__ == "__main__":
-	primer3_design(target_fa,config,prefix)
+	primer3_design(target_fa,prefix)
