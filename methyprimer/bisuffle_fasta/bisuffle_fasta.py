@@ -11,7 +11,7 @@ def bisuffle_fasta(filter_primer,prefix):
 			flag = line.split("_")[-1]
 			flag = flag.strip()
 			continue
-		if flag == 'forward':
+		if flag == 'F':
 			primer = line.replace('CG','XX')
 			primer = primer.replace('C','T')
 			primer = primer.replace('XX','CG')
@@ -19,7 +19,7 @@ def bisuffle_fasta(filter_primer,prefix):
 			primer = primer.upper()
 			new_line += primer
 			continue
-		if flag == 'reverse':
+		if flag == 'R':
 			primer = line.replace('CG','XX')
 			primer = primer.replace('G','A')
 			primer = primer.replace('XX','CG')
